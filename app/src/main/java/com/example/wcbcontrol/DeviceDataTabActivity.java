@@ -51,6 +51,7 @@ public class DeviceDataTabActivity extends AppCompatActivity {
     GridviewFragment gridviewFragment;
     ListviewFragment listviewFragment;
 
+
     CountDownTimer countDownTimer = new CountDownTimer(1000, 200) {
         @Override
         public void onTick(long l) {
@@ -195,6 +196,7 @@ public class DeviceDataTabActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            intent.removeExtra(action);
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 updateConnectionState(R.string.discovering_services);
@@ -240,6 +242,7 @@ public class DeviceDataTabActivity extends AppCompatActivity {
                 deviceData.updateEepData(intent.getStringExtra(BluetoothLeService.EEP_DATA));
                 mEepData.setText(intent.getStringExtra(BluetoothLeService.EEP_DATA));
             }
+
 
         }
     };

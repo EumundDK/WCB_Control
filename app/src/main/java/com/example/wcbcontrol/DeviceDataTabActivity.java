@@ -240,6 +240,7 @@ public class DeviceDataTabActivity extends AppCompatActivity {
                 deviceData.updateEepData(intent.getStringExtra(BluetoothLeService.EEP_DATA));
                 mEepData.setText(intent.getStringExtra(BluetoothLeService.EEP_DATA));
             }
+
         }
     };
 

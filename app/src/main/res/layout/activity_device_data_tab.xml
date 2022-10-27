@@ -54,14 +54,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_data"
-            android:textSize="8sp"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/gatt_services_raw_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="8sp"
-            android:text="@string/no_data"/>
+            android:text="@string/no_data"
+            android:textSize="16sp" />
 
     </LinearLayout>
 

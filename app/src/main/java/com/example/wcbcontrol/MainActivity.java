@@ -1,7 +1,9 @@
 package com.example.wcbcontrol;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
@@ -9,6 +11,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -16,7 +19,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int REQUEST_ENABLE_BT = 1;
+    public static final int REQUEST_BT_ENABLE_CODE = 1;
     public static final int REQUEST_LOCATION_ENABLE_CODE = 2;
 
     private static final String[]BLE_PERMISSIONS = new String[]{
@@ -32,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_ENABLE_CODE);
+        askForBLEAndLocationPermission();
+
         if (savedInstanceState == null) {
             mBluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE))
                     .getAdapter();
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // Prompt user to turn on Bluetooth (logic continues in onActivityResult()).
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                    startActivityForResult(enableBtIntent, REQUEST_BT_ENABLE_CODE);
                 }
             } else {
                 // Bluetooth is not supported.
@@ -74,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case REQUEST_ENABLE_BT:
-
+            case REQUEST_BT_ENABLE_CODE:
                 if (resultCode == RESULT_OK) {
                     // Bluetooth is now Enabled, are Bluetooth Advertisements supported on this device?
                     if (mBluetoothAdapter.isMultipleAdvertisementSupported()) {
@@ -107,6 +110,16 @@ public class MainActivity extends AppCompatActivity {
     private void showErrorText(int messageId) {
         TextView view = (TextView) findViewById(R.id.error_textview);
         view.setText(getString(messageId));
+    }
+
+    private void askForBLEAndLocationPermission() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, BLE_PERMISSIONS, REQUEST_BT_ENABLE_CODE);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_ENABLE_CODE);
+        }
     }
 
 }
